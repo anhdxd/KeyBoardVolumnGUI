@@ -36,6 +36,7 @@ BEGIN_MESSAGE_MAP(CKeyboardVolumnDlg, CDialogEx)
 	ON_WM_CLOSE()
 	ON_MESSAGE(WM_MYMESSAGE, OnMSGIconTaskCallBack)
 	ON_BN_CLICKED(IDOK, &OnBnClickedOk)
+	ON_BN_CLICKED(IDCANCEL, &CKeyboardVolumnDlg::OnBnClickedCancel)
 END_MESSAGE_MAP()
 
 
@@ -87,7 +88,7 @@ BOOL CKeyboardVolumnDlg::OnInitDialog()
 	NOTIFYICONDATA nid;
 
 	nid.cbSize = sizeof(NOTIFYICONDATA);
-	nid.hWnd = m_hWnd;
+	nid.hWnd = GetSafeHwnd();
 	nid.uID = MY_ID_ICONTASK;
 	nid.uVersion = NOTIFYICON_VERSION;
 	nid.uCallbackMessage = WM_MYMESSAGE;
@@ -97,7 +98,6 @@ BOOL CKeyboardVolumnDlg::OnInitDialog()
 
 	//if(!Shell_NotifyIconW(NIM_SETVERSION, &nid))
 	Shell_NotifyIconW(NIM_ADD, &nid);
-	PostMessage(WM_CLOSE, 0, 0);
 	return TRUE;  // return TRUE  unless you set the focus to a control
 }
 
@@ -197,16 +197,23 @@ LRESULT CKeyboardVolumnDlg::OnMSGIconTaskCallBack(WPARAM wParam, LPARAM lParam)
 
 void CKeyboardVolumnDlg::OnBnClickedOk()
 {
+
+	// TODO: Add your control notification handler code here
+	ShowWindow(SW_HIDE);
+	return;
+}
+
+
+void CKeyboardVolumnDlg::OnBnClickedCancel()
+{
 	NOTIFYICONDATA nid;
 
 	nid.cbSize = sizeof(NOTIFYICONDATA);
 	nid.hWnd = m_hWnd;
 	nid.uID = MY_ID_ICONTASK;
 
-	//UnregisterHotKey(GetSafeHwnd(), MY_ID_HOTKEY);
-	//Shell_NotifyIconW(NIM_DELETE, &nid);
-	// TODO: Add your control notification handler code here
-	OnCancel();
-	ShowWindow(SW_HIDE);
-	return;
+	UnregisterHotKey(GetSafeHwnd(), MY_ID_HOTKEY);
+	Shell_NotifyIconW(NIM_DELETE, &nid);
+
+	CDialogEx::OnCancel();
 }
