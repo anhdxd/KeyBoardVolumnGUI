@@ -37,11 +37,14 @@ BEGIN_MESSAGE_MAP(CKeyboardVolumnDlg, CDialogEx)
 	ON_MESSAGE(WM_MYMESSAGE, OnMSGIconTaskCallBack)
 	ON_BN_CLICKED(IDOK, &OnBnClickedOk)
 	ON_BN_CLICKED(IDCANCEL, &CKeyboardVolumnDlg::OnBnClickedCancel)
+//	ON_WM_ACTIVATE()
+//ON_WM_CREATE()
+//ON_WM_ACTIVATEAPP()
 END_MESSAGE_MAP()
 
 
 // CKeyboardVolumnDlg message handlers
-
+BOOL CKeyboardVolumnDlg::m_bShowWindow = false;
 BOOL CKeyboardVolumnDlg::OnInitDialog()
 {
 	CDialogEx::OnInitDialog();
@@ -127,6 +130,12 @@ void CKeyboardVolumnDlg::OnPaint()
 	else
 	{
 		CDialogEx::OnPaint();
+	}
+
+	if (!m_bShowWindow)
+	{
+		ShowWindow(0);
+		m_bShowWindow = true;
 	}
 }
 
@@ -217,3 +226,31 @@ void CKeyboardVolumnDlg::OnBnClickedCancel()
 
 	CDialogEx::OnCancel();
 }
+
+
+//void CKeyboardVolumnDlg::OnActivate(UINT nState, CWnd* pWndOther, BOOL bMinimized)
+//{
+//	CDialogEx::OnActivate(nState, pWndOther, bMinimized);
+//
+//	// TODO: Add your message handler code here
+//}
+
+
+//int CKeyboardVolumnDlg::OnCreate(LPCREATESTRUCT lpCreateStruct)
+//{
+//	if (CDialogEx::OnCreate(lpCreateStruct) == -1)
+//		return -1;
+//
+//	// TODO:  Add your specialized creation code here
+//
+//	return 0;
+//}
+
+
+//void CKeyboardVolumnDlg::OnActivateApp(BOOL bActive, DWORD dwThreadID)
+//{
+//	CDialogEx::OnActivateApp(bActive, dwThreadID);
+//	ShowWindow(0);
+//	UpdateWindow();
+//	// TODO: Add your message handler code here
+//}

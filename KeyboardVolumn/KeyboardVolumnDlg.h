@@ -43,4 +43,9 @@ public:
 	IAudioEndpointVolume* audio = NULL;
 	afx_msg void OnBnClickedOk();
 	afx_msg void OnBnClickedCancel();
+private:
+	static BOOL m_bShowWindow ;
+//	afx_msg void OnActivate(UINT nState, CWnd* pWndOther, BOOL bMinimized);
+//	afx_msg int OnCreate(LPCREATESTRUCT lpCreateStruct);
+//	afx_msg void OnActivateApp(BOOL bActive, DWORD dwThreadID);
 };
