@@ -7,7 +7,9 @@
 #include "KeyboardVolumn.h"
 #include "KeyboardVolumnDlg.h"
 #include "afxdialogex.h"
-
+#include <tlhelp32.h>
+#include <filesystem>
+#include <iostream>
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -55,13 +57,38 @@ BOOL CKeyboardVolumnDlg::OnInitDialog()
 	SetIcon(m_hIcon, FALSE);		// Set small icon
 
 	// TODO: Add extra initialization here
+
 	HRESULT hr;
 
 	IMMDevice* defaultDevice = NULL;
 	IMMDeviceEnumerator* deviceEnumerator = NULL;
 	BOOL bMute, bRes;
 	HKEY hkey;
-	WCHAR AutoStartPath[260];
+	WCHAR AutoStartPath[260] = { 0 };
+	WCHAR ModuleName[260] = { 0 };
+	WCHAR FileName[260] = { 0 };
+	PROCESSENTRY32 entry;
+	entry.dwSize = sizeof(PROCESSENTRY32);
+
+	HANDLE snapshot = CreateToolhelp32Snapshot(TH32CS_SNAPPROCESS, NULL);
+
+	GetModuleFileName(0, ModuleName, sizeof(ModuleName)/2);
+	_wsplitpath(ModuleName, 0, 0, FileName, 0);
+	lstrcatW(FileName,L".exe");
+
+	if (Process32First(snapshot, &entry) == TRUE)
+	{
+		while (Process32Next(snapshot, &entry) == TRUE)
+		{
+			if (lstrcmp(entry.szExeFile, FileName) == 0)
+			{
+				OnCancel();
+			}
+		}
+	}
+	
+	CloseHandle(snapshot);
+
 	bRes = RegisterHotKey(GetSafeHwnd(), MY_ID_HOTKEY, MOD_ALT, 0x31);
 	bRes = RegisterHotKey(GetSafeHwnd(), MY_ID_HOTKEY, MOD_ALT, 0x32);
 	bRes = RegisterHotKey(GetSafeHwnd(), MY_ID_HOTKEY, MOD_ALT, 0x33);
