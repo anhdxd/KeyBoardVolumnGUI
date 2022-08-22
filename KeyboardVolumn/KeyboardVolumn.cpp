@@ -6,7 +6,7 @@
 #include "framework.h"
 #include "KeyboardVolumn.h"
 #include "KeyboardVolumnDlg.h"
-
+#include <tlhelp32.h>
 #ifdef _DEBUG
 #define new DEBUG_NEW
 #endif
@@ -40,6 +40,30 @@ CKeyboardVolumnApp theApp;
 
 BOOL CKeyboardVolumnApp::InitInstance()
 {
+	WCHAR ModuleName[260] = { 0 };
+	WCHAR FileName[260] = { 0 };
+	PROCESSENTRY32 entry;
+	entry.dwSize = sizeof(PROCESSENTRY32);
+
+	HANDLE snapshot = CreateToolhelp32Snapshot(TH32CS_SNAPPROCESS, NULL);
+
+	GetModuleFileName(0, ModuleName, sizeof(ModuleName) / 2);
+	_wsplitpath(ModuleName, 0, 0, FileName, 0);
+	lstrcatW(FileName, L".exe");
+
+	if (Process32First(snapshot, &entry) == TRUE)
+	{
+		while (Process32Next(snapshot, &entry) == TRUE)
+		{
+			if (lstrcmp(entry.szExeFile, FileName) == 0)
+			{
+				if(GetProcessId(GetCurrentProcess()) != entry.th32ProcessID)
+					return FALSE;
+			}
+		}
+	}
+
+	CloseHandle(snapshot);
 	// InitCommonControlsEx() is required on Windows XP if an application
 	// manifest specifies use of ComCtl32.dll version 6 or later to enable
 	// visual styles.  Otherwise, any window creation will fail.
